@@ -1,22 +1,37 @@
-import { useState } from "react";
+function FilterableProductTable() {
+  return (
+    <div>
+      <SearchBar />
+      <h1>Return the table!</h1>
+    </div>
+  );
+}
 
-function MyButton({ count, onClick }: { count: any; onClick: any }) {
-  return <button onClick={onClick}>Clicked count: {count}</button>;
+function SearchBar() {
+  return (
+    <div>
+      <div>
+        <form>
+          <label>
+            <input type="text" placeholder="Search..." />
+          </label>
+        </form>
+      </div>
+      <br />
+      <div>
+        <label>
+          <input type="checkbox" />
+          Only show products in stock
+        </label>
+      </div>
+    </div>
+  );
 }
 
 export default function App() {
-  const [count, setCount] = useState(0);
-
-  function handleClick() {
-    setCount(count + 1);
-  }
-
   return (
     <div className="App">
-      <h1>Welcome to React</h1>
-      <MyButton count={count} onClick={handleClick} />
-      <MyButton count={count} onClick={handleClick} />
-      <MyButton count={count} onClick={handleClick} />
+      <FilterableProductTable />
     </div>
   );
 }
