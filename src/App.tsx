@@ -1,9 +1,56 @@
+import React from "react";
+
 function FilterableProductTable({ products }: { products: any }) {
+  const [filterText, setFilterText] = React.useState("");
+  const [inStockOnly, setInStockOnly] = React.useState(false);
+
   return (
     <div>
-      <SearchBar />
-      <ProductTable products={products} />
+      <SearchBar
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly}
+      />
+      <ProductTable
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+      />
     </div>
+  );
+}
+
+function SearchBar({
+  filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange,
+}: {
+  filterText: string;
+  inStockOnly: boolean;
+  onFilterTextChange: any;
+  onInStockOnlyChange: any;
+}) {
+  return (
+    <form>
+      <input
+        type="text"
+        value={filterText}
+        placeholder="Search..."
+        onChange={(e) => onFilterTextChange(e.target.value)}
+      />
+      <br />
+      <br />
+      <label>
+        <input
+          type="checkbox"
+          checked={inStockOnly}
+          onChange={(e) => onInStockOnlyChange(e.target.checked)}
+        />
+        Only show products in stock
+      </label>
+    </form>
   );
 }
 
@@ -32,10 +79,23 @@ function ProductCategoryRow({ category }: { category: string }) {
   );
 }
 
-function ProductTable({ products }: { products: [any] }) {
+function ProductTable({
+  products,
+  filterText,
+  inStockOnly,
+}: {
+  products: [any];
+  filterText: string;
+  inStockOnly: boolean;
+}) {
   const rows: any[] = [];
   let lastCategory = "";
   products.forEach((product, i) => {
+    if (inStockOnly && !product.stocked) return;
+    if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+      return;
+    }
+
     if (product.category !== lastCategory) {
       rows.push(
         <ProductCategoryRow
@@ -58,27 +118,6 @@ function ProductTable({ products }: { products: [any] }) {
         <tbody>{rows}</tbody>
       </thead>
     </table>
-  );
-}
-
-function SearchBar() {
-  return (
-    <div>
-      <div>
-        <form>
-          <label>
-            <input type="text" placeholder="Search..." />
-          </label>
-        </form>
-      </div>
-      <br />
-      <div>
-        <label>
-          <input type="checkbox" />
-          Only show products in stock
-        </label>
-      </div>
-    </div>
   );
 }
 
